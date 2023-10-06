@@ -1,0 +1,238 @@
+{% extends 'index.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="container min-width-355">
+            <nav class="navbar bg-body-tertiary ">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/"><h3>Морской бой</h3></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-3 mb-lg-0">
+                            <li class="nav-item mb-3">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Правила игры</button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Правила</h1>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{ alert }}
+                                                Необходимо ввести двухзначное число.<br>
+                                                Первая цифра это ось X по горизонтали от 0 до 9 (отсчет клеток начинается с 0 !!)<br>
+                                                Вторая цифра это ось Y по вертикали от 0 до 9 (отсчет клеток начинается с 0 !!)<br>
+                                                Если в поле координат ввести <b>stop</b> игра будет остановлена.<br>
+                                                Пример : 25<br>
+                                                Координаты поля смотрите на рисунке ниже:
+                                                <br>
+                                                <img class="img-fluid" alt="" src="{{ url_for('static', filename='images/pole.png') }}">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Понятно -
+                                                    закрыть
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END Modal -->
+                            </li>
+                            <li class="nav-item mb-3">
+                                <form action="{{ url_for('restart_game') }}" method="post">
+                                    <button type="submit" class="btn btn-outline-secondary">Перезапустить игру</button>
+                                </form>
+                            </li>
+                            <li class="nav-item mb-3">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">Подсмотреть 👁️</button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Корабли противника</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- поле противника с видимыми кораблями -->
+                                                <div class="text-center font-monospace">
+                                                    {% for item in comp_pole %}
+                                                        {% for a in item %}
+                                                            {{ a }}
+                                                        {% endfor %}<br>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <br>
+
+            <div class="row row-cols-1 row-cols-md-1 ">
+                <div class="col my-1">
+                    <div class="card h-100">
+                        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseCard1">
+                            <div class="row">
+                                <div class="col"><h5 class="card-title text-center">Ваше поле</h5></div>
+                            </div>
+                        </div>
+                        <div id="collapseCard1" class="collapse">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col border d-flex justify-content-center">
+                                        <table>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>
+                                                    <div class="text text-danger font-monospace">0 1 2 3 4 5 6 7 8 9</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text text-danger font-monospace">
+                                                    0&nbsp;<br>
+                                                    1&nbsp;<br>
+                                                    2&nbsp;<br>
+                                                    3&nbsp;<br>
+                                                    4&nbsp;<br>
+                                                    5&nbsp;<br>
+                                                    6&nbsp;<br>
+                                                    7&nbsp;<br>
+                                                    8&nbsp;<br>
+                                                    9&nbsp;<br>
+                                                </td>
+                                                <td class="font-monospace">
+                                                    {% for item in player_pole %}
+                                                        {% for a in item %}
+                                                            {{ a }}
+                                                        {% endfor %}<br>
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer"></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col"><h5 class="card-title text-center">Комп поле</h5></div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col border d-flex justify-content-center">
+                                    <table>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>
+                                                <div class="text text-danger font-monospace">0 1 2 3 4 5 6 7 8 9</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text text-danger font-monospace">
+                                                0&nbsp;<br>
+                                                1&nbsp;<br>
+                                                2&nbsp;<br>
+                                                3&nbsp;<br>
+                                                4&nbsp;<br>
+                                                5&nbsp;<br>
+                                                6&nbsp;<br>
+                                                7&nbsp;<br>
+                                                8&nbsp;<br>
+                                                9&nbsp;<br>
+                                            </td>
+                                            <td class="font-monospace">
+                                                {% for item in comp_pole_hide_ship %}
+                                                    {% for a in item %}
+                                                        {{ a }}
+                                                    {% endfor %}<br>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer"></div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <!-- блок оповещений -->
+            <div class="container">
+                <div class="row-">
+                    <div class="col-xs-6 md-3">
+                        {% if win == "player" or win == "comp" %} <!--если кто то выиграл -->
+                            <div class="alert alert-secondary" role="alert">
+                                {% for msg in get_flashed_messages() %}
+                                    <div class="alert alert-secondary" role="alert">
+                                        {{ msg | safe }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% elif move_player == 1 %} <!--если ход игрока -->
+                            {% if crd != 'stop' %} <!--если игрок ввел stop остановил игру -->
+                                {% if get_flashed_messages() %}
+                                    <div class="alert alert-secondary" role="alert">
+                                        {% for msg in get_flashed_messages() %}
+                                            {{ msg | safe }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <form action="/start" method="post">
+                                    <div class="col-md-6 mx-auto">
+
+                                        <input type="text" maxlength="4" name="coord_input" class="form-control" placeholder="Введите координаты">
+
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit" class="btn btn-secondary mt-3">Отправить</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            {% else %}
+                                {% for msg in get_flashed_messages() %}
+                                    {{ msg | safe }}<br>
+                                {% endfor %}
+                            {% endif %}
+                        {% elif move_comp == 1 %} <!--если ход компьютера -->
+                            <div class="alert alert-secondary" role="alert">
+                                {% for msg in get_flashed_messages() %}
+                                    {{ msg | safe }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+            <footer class="pt-3 mt-4 text-body-secondary border-top">&copy; 2023</footer>
+        </div>
+    </main>
+
+    {% if move_comp == 1 %}
+        <script>
+            setTimeout(function () {
+                location.reload();
+            }, 1500);
+        </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru" data-bs-theme="auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Voron python dev">
+    <meta name="generator" content="Battle war ships 1.0">
+    <!-- Подключение стилей Bootstrap -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+    <style>
+        body {
+            background-color: #e1eff6;
+        }
+    </style>
+</head>
+<body>
+
+{% block content %}
+    <main>
+        <div class="container min-width-355">
+            <div class="px-4 py-2 text-center">
+                <img class="d-block mx-auto mb-1" src="{{ url_for('static', filename='images/logo.svg') }}" alt="" width="92" height="77">
+                <h1 class="display-5 fw-bold text-body-emphasis">Морской бой</h1>
+                <div class="col-lg-6 mx-auto">
+                    <p class="lead mb-1">Классическая игра морской бой.<br>Правила простые: подбейте все корабли противника и вы победили !
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-6 mx-auto">
+                <div class="col py-1 d-flex justify-content-center">
+                    <button onclick="window.location.href ='/start'" type="button" class="btn btn-outline-secondary btn-lg px-4">Играть</button>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+
+<!-- Подключение скриптов Bootstrap и тд-->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<!-- перезагрузка страницы если ход компьютера -->
+{% block script %}
+{% endblock %}
+
+</body>
+</html>
